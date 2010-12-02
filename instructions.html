@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>PHP Sample</title>
+<link href="css/document.css" rel="stylesheet" type="text/css" />
+<link href="css/sforce.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p><a href="http://developer.appexchange.com"><img src="images/adn-blog.gif" width="772" height="136" border="0" /></a></p>
+<h2 class="pNewHTMLPage">PHP 5 SOAP Extension Toolkit [AppExchange 7.0 API] </h2>
+<p class="pNewHTMLPage"><strong>Instructions</strong> | <a href="apidocs/index.html">API Docs</a> | <a href="apache.html">Apache Setup</a> | <a href="php.html">PHP Setup</a> | <a href="tests.html">Unit Tests</a></p>
+<hr />
+<p class="pBody">Although this toolkit is aimed at developers who are already familiar with PHP, novices will also find it helpful in learning PHP and the salesforce API calls. The toolkit is based on PHP 5 and the included SOAP extension. PHP 5's SOAP extension being written in C has the advantage of being faster than other SOAP implementations written in PHP. This  toolkit uses this extension to interface with the AppExchange API.</p>
+<p class="pBody">The toolkit supports the Partner WSDL only. You will have access to all the same objects and capabilities of the  API from the Partner WSDL as you do from the Enterprise WSDL. There is no need to use the Enterprise WSDL</p>
+<p class="pBody">Included in this toolkit are the following directories:</p>
+<table border="1" cellpadding="4" cellspacing="0">
+<tbody>
+  <tr align="left" bgcolor="#999999">
+	<th><div class="pCellHeading">Directory</div></th>
+	<th><div class="pCellHeading">Description</div></th>
+  </tr>
+  <tr align="left" bgcolor="#f9f9f9">
+    <td><strong>apidocs</strong>/</td>
+    <td>API docs </td>
+  </tr>
+  <tr align="left" bgcolor="#f1f1f1"> 
+    <td>css/</td>
+    <td>Style sheets </td>
+  </tr>
+  <tr align="left" bgcolor="#f9f9f9">
+    <td>images/</td>
+    <td>Images</td>
+  </tr>
+  <tr align="left" bgcolor="#f1f1f1"> 
+    <td><strong>samples</strong>/</td>
+    <td>HelloWorld.php and an Account edit sample. </td>
+  </tr>
+  <tr align="left" bgcolor="#f9f9f9">
+    <td><strong>soapclient</strong>/</td>
+    <td>Soapclient classes </td>
+  </tr>
+  <tr align="left" bgcolor="#f1f1f1"> 
+    <td><strong>test</strong>/</td>
+    <td>Test scripts </td>
+  </tr>
+  </tbody>
+</table>
+<p class="pBody">In the soapclient directory, you will the SforcePartnerClient class which is used to make the connection and all method calls to the API. In order to create a connection, you first instantiate SforcePartnerClient and then pass in the WSDL. Once you have an instance of SforcePartnerClient, other AppExchange API method calls can be called directly on the instance. In this instance, you can login by calling <code>login</code> directly on <code>$mySForceConnection</code>. Browse the <a href="apidocs/index.html">API  doc</a> to learn more about each available method call.</p>
+<pre class="codebox">
+require_once ('soapclient/SforcePartnerClient.php');
+
+$mySforceConnection = new SforcePartnerClient();
+$mySoapClient = $mySforceConnection->createConnection("partner.wsdl.xml");
+$mylogin = $mySforceConnection->login("username@mail.com", "changeme");
+</pre>
+<p class="pBody">In the samples directory, you will find two samples, <code>HelloWorld.php</code> and a more in depth sample that handles login and session and can display, edit, and delete accounts. Instructions on how to run them can be found below. Additionally, a PHPUnit2 test class, <code>SforcePartnerClientTest.php</code>, is packaged with the example and has an example for each method call. See <a href="tests.html">tests.html</a> for information on how to run. </p>
+<p class="pBody"><em>Results with  SObject</em>s</p>
+<p class="pBody">In the current PHP SOAP extension implementation,  you will need to programmatically convert results that return sObjects. Each SObject has a <code>fields</code> array that will contain the fields selected during the query.  For example, </p>
+<pre class="codebox">
+...
+$query = &quot;SELECT Id, FirstName, LastName from Contact&quot;;
+$queryResult = $mySforceConnection-&gt;query($query);<br />$records = $queryResult-&gt;records;
+foreach ($records as $record) {<br />  $sObject = new <strong>SObject</strong>($record);<br />  echo &quot;Id = &quot;.<strong>$sObject-&gt;Id</strong>;<br />  echo &quot;First Name = &quot;.<strong>$sObject-&gt;fields-&gt;FirstName</strong>;<br />  echo &quot;Last Name = &quot;.<strong>$sObject-&gt;fields-&gt;LastName</strong>;
+}
+</pre>
+<p class="pBody">Note that the Id field is on the sObject and not part of the fields  array due to the way that the current SOAP extension handles the Id  field. This may change in the future.</p>
+<p class="pBody"><em>SOAP Headers</em></p>
+<p class="pBody">The AppExchange API provides SOAP header options to client applications. All of these options are available in both the Enterprise and Partner WSDL files. To use these headers in an PHP client, simply include the following file:</p>
+<pre class="codebox">require_once ('soapclient/SforceHeaderOptions.php');</pre>
+<p class="pBody">This file contains three classes to handle AssignmentRuleHeader, MruHeader, and QueryOptions. <code>SforcePartnerClientTest.php</code> has examples of each. </p>
+<p class="pBody"><em>Session Management </em></p>
+<p class="pBody">When a redirection occurs from one PHP page to another, the SOAP client must be reinstantiated for each page. In the first PHP page after a successful login, store the SessionID, endpoint, and WSDL reference in the session:</p>
+<pre class="codebox">session_start();
+$_SESSION['location'] = $mySforceConnection-&gt;getLocation();
+$_SESSION['sessionId'] = $mySforceConnection-&gt;getSessionId();
+$_SESSION['wsdl'] = $wsdl;
+
+session_write_close();
+header('Location: welcome.php');
+</pre>
+<p class="pBody">On the second PHP page, reinstantiate the SOAP client by reusing the attributes that were stored in the session:</p>
+<pre class="codebox">// Retrieve session attributes
+session_start();
+$location = $_SESSION['location'];
+$sessionId = $_SESSION['sessionId'];
+$wsdl = $_SESSION['wsdl'];
+<br />
+$mySforceConnection = new SforcePartnerClient();
+$sforceSoapClient = $mySforceConnection-&gt;createConnection($wsdl);
+$mySforceConnection-&gt;setEndpoint($location);
+$mySforceConnection-&gt;setSessionHeader($sessionId);
+</pre>
+<p class="pBody"><em>SOAP COMPRESSION</em></p>
+<p class="pBody">Due to PHP Bug #36283, SOAP compression is turned off by default in SforceBaseClient. This bug should be fixed in the release after PHP 5.1.2. Once that happens, simply edit the createConnection($wsdl) method in SforceBaseClient.php to look as follows: </p>
+<pre class="codebox">// Uncomment
+$this-&gt;sforce = new SoapClient($wsdl, array('compression' =&gt; SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP));
+
+// Comment out
+// $this-&gt;sforce = new SoapClient($wsdl, array('trace' =&gt; 1));</pre>
+ <h3 class="pHeading2">Prerequisites</h3>
+<p>Before you execute the samples, please ensure that you have the following: 
+<div class="pSmartList1">
+<ul class="pSmartList1">
+<div class="pSmartList1">
+  <li>AppExchange Developer Network (ADN) account. </li>
+  <li>PHP 5.1.2</li>
+  <li>Optional: PHP capable web server; i.e., Apache or IIS. A web server will be needed to run the Account sample. </li>
+</div>
+</ul>
+<p><span class="pBody">Note: Since there are a wide variety of environments, this document will cover the toolkit in the context of a PHP 5.1.2, Apache Web Server 2.0.55, and Windows XP environment. </span></p>
+</div> 
+<h3 class="pHeading2">Build, Configure, and Deploy </h3>
+<p><em>Configure</em></p>
+<p>Your PHP installation will need to have both SSL and SOAP enabled in order to use this toolkot. See <a href="php.html">PHP Setup</a> for detailed instructions and tips. </p>
+<p>Your web server will also need to be configured for PHP. For Apache, this means loading the php5_module and configuring an additional AddType. See <a href="apache.html">Apache Setup</a> for detailed instructions and tips. </p>
+<p>A <code>partner.wsdl.xml</code> file is packaged with the toolkit. If for some reason you need a newer version you will need to obtain it from your ADN account. Log into your ADN account and access the setup area. Under  'Integrate' in the left-hand panel you will find the WSDL generator.  Select 'Integrate' and then choose the Partner WSDL from the main  window. Simply write over the existing <code>partner.wsdl.xml</code> that comes with this toolkit. </p>
+<p><em>Deploy</em></p>
+<p>Create a directory named &quot;sforce-php&quot; in the document root of your webserver.  Copy the contents of this toolkit into this directory. See <a href="apache.html">Apache Setup</a> to locate or reconfigure the document root for Apache. </p>
+<p>Before running, HelloWorld.php, simply edit <em>sforce-php</em>/samples/HelloWorld.php and replace username@mail.com and password with your ADN account username and password. </p>
+<h3 class="pHeading2">Run</h3>
+<p>To run HelloWorld.php, open a CMD window and navigate to the <em>sforce-php</em> directory and simply execute, &quot;<strong><code>php HelloWorld.php</code></strong>&quot;. Be sure that you are using your ADN account username and password. Your expected output should be:</p>
+<pre class="codebox">C:\Apache Group\Apache2\htdocs\sforce-php\samples&gt; <strong>php HelloWorld.php</strong>
+Nick Tran, your session id is Ng1.71derW7pIQ.Kp3Q6ccq.0jBiDpe4xFWexbAVl.7Ay1qDHN
+BOuQGl0xA807xJ8P2W7ea0k6ldBfzTvFPMKmpYnKO9AsNCSeX5jsUoLXQ= </pre>
+<p>To run the Account sample , navigate to <u>http://localhost:[<em>port</em>]/sforce-php/samples/login.php</u> where <em>port</em> is your http listen port. Login with your ADN account username and password. You should be presented with a table of Accounts which can be edited or deleted.</p>
+<h3 class="pHeading2">Tips / Troubleshooting</h3>
+<ul>
+  <li>If you run into problems with PHP header redirection in the Account sample, make sure that you have <code>output_buffering = 4096</code> in your php.ini file. </li>
+  <li>To view the SOAP headers and messages, simply call these methods on the connection.
+    <pre class="codebox">
+...
+echo $mySforceConnection-&gt;getLastRequest;
+echo $mySforceConnection-&gt;getLastRequestHeaders;
+echo $mySforceConnection-&gt;getLastResponse;
+echo $mySforceConnection-&gt;getLastResponseHeaders;  </pre>
+  </li>
+  <li>Use the AppExchange <a href="http://www.salesforce.com/developer/projects_toolkits.jsp">Explorer</a> to browse the schema and create and test SOQL queries.</li>
+</ul>
+<h3>Additional Reading </h3>
+<p><a href="http://www.sforce.com/us/docs/sforce70/wwhelp/wwhimpl/common/html/wwhelp.htm?context=sforceAPI_WWHelp_bak&amp;file=sforce_API_calls_concepts.html#wp1467555">AppExchange API Calls</a></p>
+<h3 class="pHeading2">Support</h3>
+<p><a href="http://developer.appexchange.com">AppExchange Developer Network</a></p>
+<p><span class="pNewHTMLPage"><em>Special thanks to Park Walker who provided an initial example.</em></span></p>
+</body>
+</html>

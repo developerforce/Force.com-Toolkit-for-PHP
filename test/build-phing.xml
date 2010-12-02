@@ -1,0 +1,5 @@
+<project name="build phing" default="phing">
+	<target name="phing">
+		<exec dir="." executable="phing.bat" os="Windows XP" output="build.out"/>
+	</target>
+</project>

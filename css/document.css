@@ -1,0 +1,25 @@
+/* Default style for links */
+a:active  { color: #666666; text-decoration: underline; font-weight:normal; }
+a:visited.{ color: #666666; text-decoration: underline; font-weight:normal; }
+a:link { color: #666666; text-decoration: underline; font-weight:normal; }
+a:hover { color: #CC0000; text-decoration: underline; font-weight:normal; }
+
+/* Default style */
+body
+{
+  font-family: 'Verdana', 'Arial', 'Helvetica', 'sans-serif'; font-weight: normal; font-size: 12px; color: #666666; background-color: #FFFFFF;
+}
+
+/* Use this style for footnote numbers */
+span.Footnote
+{
+  font-size: small;
+  vertical-align: super
+}
+
+/* Use this style to control spacing for inline related topics tags */
+div.WWHInlineRelatedTopics
+{
+  margin-top:    8px;
+  margin-bottom: 4px;
+}

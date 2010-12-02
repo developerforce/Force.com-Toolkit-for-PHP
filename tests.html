@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Apache Setup</title>
+<link href="css/document.css" rel="stylesheet" type="text/css" />
+<link href="css/sforce.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p><a href="http://developer.appexchange.com"><img src="images/adn-blog.gif" width="772" height="136" border="0" /></a></p>
+<h2 class="pNewHTMLPage">Unit Tests</h2>
+<p class="pNewHTMLPage"><strong><a href="instructions.html">Instructions</a></strong> | <a href="apidocs/index.html">API Docs</a> | <a href="apache.html">Apache Setup</a> | <a href="php.html">PHP Setup</a> | <strong>Unit Tests </strong></p>
+<hr />
+<p>The included unit tests are based on PHPUnit2 and Phing.  PHPUnit2 provides the testing framework while Phing is an ANT based build system. <span class="pHeading2">The current version of PHPUnit2 as this is written is 2.3.5. The current version of Phing is </span>2.1.1. PHP 5.1.2 is also required. </p>
+<h3 class="pHeading2">Installation</h3>
+<p class="pHeading2">You can install PHPUnit2 using the PHP Extension and Application Repository (PEAR) installer. On the command-line in your PHP5 home directory, simply type:</p>
+<code class="cCode">pear install PHPUnit2</code>
+<p class="pHeading2">Due to the changing nature of the Phing documentation as this is written, please refer to <a href="http://phing.info/trac/">http://phing.info/trac/</a> for the latest installation instructions.. </p>
+<p class="pHeading2">This document will  assume <code class="cCode">C:\dev\php5</code> as your PHP base directory.  </p>
+<h3 class="pHeading2">Build, Configure, and Deploy </h3>
+<p><em>Configure</em></p>
+<p>Edit <code class="cCode"><em>DOC_ROOT</em>/php-soap/test/SforcePartnerClientTest.php</code> and modify the following to match your account: </p>
+<code class="cCode"> private $username = &quot;username@mail.com&quot;;<br />
+private $password = &quot;changeme&quot;;</code>
+<p>A <code>partner.wsdl.xml</code> file is packaged with the toolkit. If for some reason you need a newer version you will need to obtain it from your ADN account. Log into your ADN account and access the setup area. Under  'Integrate' in the left-hand panel you will find the WSDL generator.  Select 'Integrate' and then choose the Partner WSDL from the main  window. Simply write over the existing <code>partner.wsdl.xml</code> that comes with this toolkit. </p>
+<h3 class="pHeading2">Run</h3>
+<ol>
+  <li> Open a CMD prompt.<br />
+  </li>
+  <li>Navigate to <code class="cCode">DOC_ROOT/php-soap/test/</code></li>
+  <li>Type &quot;phing&quot;</li>
+</ol>
+The tests results can be found in <code class="cCode">DOC_ROOT/php-soap/test/reports/index.html</code>.The log file containing any exception is outputted to <code class="cCode">DOC_ROOT/php-soap/test/reports/logfile.xml</code>.
+<h3 class="pHeading2">Tips / Troubleshooting</h3>
+<p>&nbsp;</p>
+<p class="pHeading2">&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Apache Setup</title>
+<link href="css/document.css" rel="stylesheet" type="text/css" />
+<link href="css/sforce.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<p><a href="http://developer.appexchange.com"><img src="images/adn-blog.gif" width="772" height="136" border="0" /></a></p>
+<h2 class="pNewHTMLPage">Apache Setup</h2>
+<p class="pNewHTMLPage"><strong><a href="instructions.html">Instructions</a></strong> | <a href="apidocs/index.html">API Docs</a> | <strong>Apache Setup</strong> | <a href="php.html">PHP Setup</a> | <a href="tests.html">Unit Tests</a></p>
+<hr />
+<p><span class="pHeading2">The current version of Apache as this is written is 2.0.55. </span></p>
+<h3 class="pHeading2">Installation</h3>
+<p class="pHeading2">You can get the <a href="http://httpd.apache.org/download.cgi">current distribution</a> from   the download section of the Apache site.</p>
+<p class="pHeading2">This document will assume <code class="cCode">C:\Apache Group\Apache2</code> as your Apache base directory. It will assume <code class="cCode">C:\dev\php5</code> as your PHP base directory. </p>
+<h3 class="pHeading2"> Configure</h3>
+<p class="pHeading2">Apache's configuration is captured in the <code class="cCode">C:\Apache Group\Apache2\conf\httpd.conf</code> file. </p>
+<p>Turning on PHP 5 Support </p>
+Edit the configuration file and add the following entries in the appropriate sections:
+  <pre class="codebox"># Dynamic Shared Object (DSO) Support
+  LoadModule php5_module &quot;c:/dev/php5/php5apache2.dll&quot;
+
+  # AddType
+  AddType application/x-httpd-php .php
+
+  # Anywhere
+  PHPIniDir &quot;c:/dev/php5&quot;</pre>
+<p>Document Root </p>
+<p class="pHeading2">Search for &quot;DocumentRoot&quot; to locate the directory for your document root. If you decide to change this, please also change the value of &lt;Directory to match the document root. </p>
+<p class="pHeading2">Restart Apache server to have the changes take effect. </p>
+<h3 class="pHeading2">Tips / Troubleshooting</h3>
+<p>To test whether PHP is properly configured for you web server, create a file, call it phpinfo.php and paste the following in:</p>
+<code class="cCode">&lt;?php phpinfo(); ?&gt; </code>
+<p class="pHeading2">Copy the file to your document root and access it in your browser by navigating to <code class="cCode">http://localhost:[<em>port</em>]/phpinfo.php</code> where <em class="cCode">port</em> is your http port. You should be presented with a page of PHP information about the current stage of PHP. </p>
+<p class="pHeading2">&nbsp;</p>
+</body>
+</html>

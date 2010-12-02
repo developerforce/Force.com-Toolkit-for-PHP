@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="PHP 5.1.2 Sforce Web Services Tests" basedir="." default="report">
+  <property name="build.root.dir" value="..\.." />
+  <property name="style.dir" value="xsl" />
+
+  <target name="prepare">
+    <mkdir dir="report" />
+  </target>
+
+  <target name="clean">
+    <delete dir="report" />
+  </target>
+
+  <target name="report" depends="prepare">
+    <phpunit2 printsummary="true">
+      <batchtest>
+        <fileset dir=".">
+          <include name="SforcePartnerClientTest.php" />
+        </fileset>
+      </batchtest>
+
+      <formatter type="xml" todir="report" outfile="logfile.xml" />
+    </phpunit2>
+    <phpunit2report infile="report/logfile.xml" format="frames" styledir="${style.dir}" todir="report" />
+  </target>
+</project>
