@@ -96,15 +96,16 @@ class SforceEnterpriseClient extends SforceBaseClient {
    * that you use upsert instead of create because upsert is idempotent.
    * Available in the API version 7.0 and later.
    *
-   * @param string $ext_Id        External Id
-   * @param array  $sObjects  Array of sObjects
+   * @param string $ext_Id External Id
+   * @param array  $sObjects Array of sObjects
+   * @param string $type The type of objects being upserted.
    * @return UpsertResult
    */
-  public function upsert($ext_Id, $sObjects) {
+  public function upsert($ext_Id, $sObjects, $type = 'Contact') {
     $arg = new stdClass;
     $arg->externalIDFieldName = new SoapVar($ext_Id, XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
     foreach ($sObjects as &$sObject) {
-      $sObject = new SoapVar($sObject, SOAP_ENC_OBJECT, 'Contact', $this->namespace);
+      $sObject = new SoapVar($sObject, SOAP_ENC_OBJECT, $type, $this->namespace);
     }
     $arg->sObjects = $sObjects;
     return parent::_upsert($arg);
