@@ -41,6 +41,7 @@ class SforceMetadataClient {
 //		if (phpversion() > '5.1.2') {
 	  if ($phpversion > '5.1.2') {
       $soapClientArray = array (
+      'user_agent' => 'toolkit-php',
       'encoding' => 'utf-8',
       'trace' => 1,
       'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
@@ -48,6 +49,7 @@ class SforceMetadataClient {
       );
     } else {
       $soapClientArray = array (
+	  'user_agent' => 'toolkit-php',
       'encoding' => 'utf-8',
       'trace' => 1,
       'sessionId' => $loginResult->sessionId
