@@ -30,6 +30,7 @@ class SforceMetadataClient {
   public $sforce;
   protected $sessionId;
   protected $location;
+  protected $version = '20.0';
 
   protected $namespace = 'http://soap.sforce.com/2006/04/metadata';
 
@@ -41,7 +42,7 @@ class SforceMetadataClient {
 //		if (phpversion() > '5.1.2') {
 	  if ($phpversion > '5.1.2') {
       $soapClientArray = array (
-      'user_agent' => 'toolkit-php',
+      'user_agent' => 'salesforce-toolkit-php/'.$this->version,
       'encoding' => 'utf-8',
       'trace' => 1,
       'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
@@ -49,7 +50,7 @@ class SforceMetadataClient {
       );
     } else {
       $soapClientArray = array (
-	  'user_agent' => 'toolkit-php',
+	  'user_agent' => 'salesforce-toolkit-php/'.$this->version,
       'encoding' => 'utf-8',
       'trace' => 1,
       'sessionId' => $loginResult->sessionId

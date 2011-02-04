@@ -42,7 +42,7 @@ class SforceBaseClient {
 	protected $sforce;
 	protected $sessionId;
 	protected $location;
-	protected $version = '17.0';
+	protected $version = '20.0';
 
 	protected $namespace;
 
@@ -102,14 +102,14 @@ class SforceBaseClient {
 //		if (phpversion() > '5.1.2') {
 		if ($phpversion > '5.1.2') {
 			$soapClientArray = array (
-		  'user_agent' => 'toolkit-php',
+		  'user_agent' => 'salesforce-toolkit-php/'.$this->version,
           'encoding' => 'utf-8',
           'trace' => 1,
           'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP
 			);
 		} else {
 			$soapClientArray = array (
-          'user_agent' => 'toolkit-php',
+          'user_agent' => 'salesforce-toolkit-php/'.$this->version,
           'encoding' => 'utf-8',
           'trace' => 1
 			);
