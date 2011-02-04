@@ -97,8 +97,6 @@ class SforceBaseClient {
 	 * @param string $wsdl   Salesforce.com Partner WSDL
 	 */
 	public function createConnection($wsdl, $proxy=null) {
-		$_SERVER['HTTP_USER_AGENT'] = 'Salesforce/PHPToolkit/1.0';
-
 		$soapClientArray = null;
 		$phpversion = substr(phpversion(), 0, strpos(phpversion(), '-'));
 //		if (phpversion() > '5.1.2') {
