@@ -69,7 +69,7 @@ class SforceEnterpriseClient extends SforceBaseClient {
 
     foreach ($sObjects as &$sObject) {
 
-    	// FIX for fieldsToNull issue (STEP #1)
+    	// FIX for fieldsToNull issue - allow array in fieldsToNull (STEP #1)
    		$xmlStr = '';
     	if(isset($sObject->fieldsToNull) && is_array($sObject->fieldsToNull)) {
     		foreach($sObject->fieldsToNull as $fieldToNull) {
@@ -80,7 +80,7 @@ class SforceEnterpriseClient extends SforceBaseClient {
     	
     	$sObject = new SoapVar($sObject, SOAP_ENC_OBJECT, $type, $this->namespace);
     	
-    	// FIX for fieldsToNull issue (STEP #2)
+    	// FIX for fieldsToNull issue - allow array in fieldsToNull (STEP #2)
     	if($xmlStr != '') {
     		$sObject->enc_value->fieldsToNull = new SoapVar(new SoapVar($xmlStr, XSD_ANYXML), SOAP_ENC_ARRAY);
     	}
@@ -105,7 +105,22 @@ class SforceEnterpriseClient extends SforceBaseClient {
     $arg = new stdClass;
     $arg->externalIDFieldName = new SoapVar($ext_Id, XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
     foreach ($sObjects as &$sObject) {
+      // FIX for fieldsToNull issue - allow array in fieldsToNull (STEP #1)
+   	  $xmlStr = '';
+      if(isset($sObject->fieldsToNull) && is_array($sObject->fieldsToNull)) {
+    	foreach($sObject->fieldsToNull as $fieldToNull) {
+    	  $xmlStr .= '<fieldsToNull>' . $fieldToNull . '</fieldsToNull>';
+    	}
+      }
+      // ------
+    	
       $sObject = new SoapVar($sObject, SOAP_ENC_OBJECT, $type, $this->namespace);
+
+	  // FIX for fieldsToNull issue - allow array in fieldsToNull (STEP #2)
+	  if($xmlStr != '') {
+	  	$sObject->enc_value->fieldsToNull = new SoapVar(new SoapVar($xmlStr, XSD_ANYXML), SOAP_ENC_ARRAY);
+	  }
+	  // ------
     }
     $arg->sObjects = $sObjects;
     return parent::_upsert($arg);
