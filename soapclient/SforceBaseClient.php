@@ -97,32 +97,27 @@ class SforceBaseClient {
 	 * @param string $wsdl   Salesforce.com Partner WSDL
 	 */
 	public function createConnection($wsdl, $proxy=null) {
-		$soapClientArray = null;
 		$phpversion = substr(phpversion(), 0, strpos(phpversion(), '-'));
-//		if (phpversion() > '5.1.2') {
+		
+		$soapClientArray = array (
+			'user_agent' => 'salesforce-toolkit-php/'.$this->version,
+			'encoding' => 'utf-8',
+			'trace' => 1,
+			'features' => SOAP_SINGLE_ELEMENT_ARRAYS
+		);
+			
+		$phpversion = substr(phpversion(), 0, strpos(phpversion(), '-'));
 		if ($phpversion > '5.1.2') {
-			$soapClientArray = array (
-		  'user_agent' => 'salesforce-toolkit-php/'.$this->version,
-          'encoding' => 'utf-8',
-          'trace' => 1,
-          'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP
-			);
-		} else {
-			$soapClientArray = array (
-          'user_agent' => 'salesforce-toolkit-php/'.$this->version,
-          'encoding' => 'utf-8',
-          'trace' => 1
-			);
+			$soapClientArray['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP;
 		}
 
 		if ($proxy != null) {
-  		$proxySettings = array();
-	    $proxySettings['proxy_host'] = $proxy->host;
-		  $proxySettings['proxy_port'] = $proxy->port; // Use an integer, not a string
-  		$proxySettings['proxy_login'] = $proxy->login; 
-      $proxySettings['proxy_password'] = $proxy->password;
-
-  		$soapClientArray = array_merge($soapClientArray, $proxySettings);
+            $proxySettings = array();
+            $proxySettings['proxy_host'] = $proxy->host;
+            $proxySettings['proxy_port'] = $proxy->port; // Use an integer, not a string
+            $proxySettings['proxy_login'] = $proxy->login; 
+            $proxySettings['proxy_password'] = $proxy->password;
+            $soapClientArray = array_merge($soapClientArray, $proxySettings);
 		}
 
 		$this->sforce = new SoapClient($wsdl, $soapClientArray);
@@ -132,8 +127,8 @@ class SforceBaseClient {
 	public function setCallOptions($header) {
 		if ($header != NULL) {
 			$this->callOptions = new SoapHeader($this->namespace, 'CallOptions', array (
-          'client' => $header->client,
-          'defaultNamespace' => $header->defaultNamespace
+		  'client' => $header->client,
+		  'defaultNamespace' => $header->defaultNamespace
 			));
 		} else {
 			$this->callOptions = NULL;
@@ -157,8 +152,8 @@ class SforceBaseClient {
 			$this->sforce->__setSoapHeaders(array($this->loginScopeHeader));
 		}
 		$result = $this->sforce->login(array (
-         'username' => $username,
-         'password' => $password
+		 'username' => $username,
+		 'password' => $password
 		));
 		$result = $result->result;
 		$this->_setLoginHeader($result);
@@ -166,23 +161,23 @@ class SforceBaseClient {
 		return $result;
 	}
 
- 	/**
+	/**
 	 * log outs from the salseforce system`
 	 *
 	 * @return LogoutResult
 	 */
- 	public function logout() {
+	public function logout() {
   $this->setHeaders("logout");
 		$arg = new stdClass;
 		return $this->sforce->logout();
 	}
  
- 	/**
+	/**
 	 *invalidate Sessions from the salseforce system`
 	 *
 	 * @return invalidateSessionsResult
 	 */
- 	public function invalidateSessions() {
+	public function invalidateSessions() {
   $this->setHeaders("invalidateSessions");
 		$arg = new stdClass;
   $this->logout();
@@ -214,7 +209,7 @@ class SforceBaseClient {
 		$this->sforce->__setSoapHeaders(NULL);
 		
 		$header_array = array (
-		    $this->sessionHeader
+			$this->sessionHeader
 		);
 
 		$header = $this->callOptions;
@@ -283,11 +278,11 @@ class SforceBaseClient {
 		// try to add allowFieldTruncationHeader
 		$allowFieldTruncationHeaderCalls = array(
 			'convertLead', 'create', 'merge',
-		    'process', 'undelete', 'update',
-		    'upsert',
+			'process', 'undelete', 'update',
+			'upsert',
 		);
 		if (in_array($call, $allowFieldTruncationHeaderCalls)) {
-		    $header = $this->allowFieldTruncationHeader;
+			$header = $this->allowFieldTruncationHeader;
 			if ($header != NULL) {
 				array_push($header_array, $header);
 			}
@@ -295,7 +290,7 @@ class SforceBaseClient {
 		
 		// try to add localeOptions
 		if ($call == 'describeSObject' || $call == 'describeSObjects') {
-		    $header = $this->localeOptions;
+			$header = $this->localeOptions;
 			if ($header != NULL) {
 				array_push($header_array, $header);
 			}
@@ -303,14 +298,14 @@ class SforceBaseClient {
 		
 		// try to add PackageVersionHeader
 		$packageVersionHeaderCalls = array(
-		    'convertLead', 'create', 'delete', 'describeGlobal',
-		    'describeLayout', 'describeSObject', 'describeSObjects',
-		    'describeSoftphoneLayout', 'describeTabs', 'merge',
-		    'process', 'query', 'retrieve', 'search', 'undelete',
-		    'update', 'upsert',
+			'convertLead', 'create', 'delete', 'describeGlobal',
+			'describeLayout', 'describeSObject', 'describeSObjects',
+			'describeSoftphoneLayout', 'describeTabs', 'merge',
+			'process', 'query', 'retrieve', 'search', 'undelete',
+			'update', 'upsert',
 		);
 		if(in_array($call, $packageVersionHeaderCalls)) {
-		    $header = $this->packageVersionHeader;
+			$header = $this->packageVersionHeader;
 			if ($header != NULL) {
 				array_push($header_array, $header);
 			}
@@ -323,8 +318,8 @@ class SforceBaseClient {
 	public function setAssignmentRuleHeader($header) {
 		if ($header != NULL) {
 			$this->assignmentRuleHeader = new SoapHeader($this->namespace, 'AssignmentRuleHeader', array (
-             'assignmentRuleId' => $header->assignmentRuleId,
-             'useDefaultRule' => $header->useDefaultRuleFlag
+			 'assignmentRuleId' => $header->assignmentRuleId,
+			 'useDefaultRule' => $header->useDefaultRuleFlag
 			));
 		} else {
 			$this->assignmentRuleHeader = NULL;
@@ -334,9 +329,9 @@ class SforceBaseClient {
 	public function setEmailHeader($header) {
 		if ($header != NULL) {
 			$this->emailHeader = new SoapHeader($this->namespace, 'EmailHeader', array (
-             'triggerAutoResponseEmail' => $header->triggerAutoResponseEmail,
-             'triggerOtherEmail' => $header->triggerOtherEmail,
-             'triggerUserEmail' => $header->triggerUserEmail
+			 'triggerAutoResponseEmail' => $header->triggerAutoResponseEmail,
+			 'triggerOtherEmail' => $header->triggerOtherEmail,
+			 'triggerUserEmail' => $header->triggerUserEmail
 			));
 		} else {
 			$this->emailHeader = NULL;
@@ -346,8 +341,8 @@ class SforceBaseClient {
 	public function setLoginScopeHeader($header) {
 		if ($header != NULL) {
 			$this->loginScopeHeader = new SoapHeader($this->namespace, 'LoginScopeHeader', array (
-        'organizationId' => $header->organizationId,
-        'portalId' => $header->portalId
+		'organizationId' => $header->organizationId,
+		'portalId' => $header->portalId
 			));
 		} else {
 			$this->loginScopeHeader = NULL;
@@ -358,7 +353,7 @@ class SforceBaseClient {
 	public function setMruHeader($header) {
 		if ($header != NULL) {
 			$this->mruHeader = new SoapHeader($this->namespace, 'MruHeader', array (
-             'updateMru' => $header->updateMruFlag
+			 'updateMru' => $header->updateMruFlag
 			));
 		} else {
 			$this->mruHeader = NULL;
@@ -368,7 +363,7 @@ class SforceBaseClient {
 	public function setSessionHeader($id) {
 		if ($id != NULL) {
 			$this->sessionHeader = new SoapHeader($this->namespace, 'SessionHeader', array (
-             'sessionId' => $id
+			 'sessionId' => $id
 			));
 			$this->sessionId = $id;
 		} else {
@@ -380,7 +375,7 @@ class SforceBaseClient {
 	public function setUserTerritoryDeleteHeader($header) {
 		if ($header != NULL) {
 			$this->userTerritoryDeleteHeader = new SoapHeader($this->namespace, 'UserTerritoryDeleteHeader  ', array (
-             'transferToUserId' => $header->transferToUserId
+			 'transferToUserId' => $header->transferToUserId
 			));
 		} else {
 			$this->userTerritoryDeleteHeader = NULL;
@@ -390,7 +385,7 @@ class SforceBaseClient {
 	public function setQueryOptions($header) {
 		if ($header != NULL) {
 			$this->queryHeader = new SoapHeader($this->namespace, 'QueryOptions', array (
-             'batchSize' => $header->batchSize
+			 'batchSize' => $header->batchSize
 			));
 		} else {
 			$this->queryHeader = NULL;
@@ -398,10 +393,10 @@ class SforceBaseClient {
 	}
 	
 	public function setAllowFieldTruncationHeader($header) {
-	    if ($header != NULL) {
+		if ($header != NULL) {
 			$this->allowFieldTruncationHeader = new SoapHeader($this->namespace, 'AllowFieldTruncationHeader', array (
-             		'allowFieldTruncation' => $header->allowFieldTruncation
-			    )
+					'allowFieldTruncation' => $header->allowFieldTruncation
+				)
 			);
 		} else {
 			$this->allowFieldTruncationHeader = NULL;
@@ -409,11 +404,11 @@ class SforceBaseClient {
 	}
 	
 	public function setLocaleOptions($header) {
-	    if ($header != NULL) {
+		if ($header != NULL) {
 			$this->localeOptions = new SoapHeader($this->namespace, 'LocaleOptions',
-			    array (
-            		'language' => $header->language
-			    )
+				array (
+					'language' => $header->language
+				)
 			);
 		} else {
 			$this->localeOptions = NULL;
@@ -424,20 +419,20 @@ class SforceBaseClient {
 	 * @param $header
 	 */
 	public function setPackageVersionHeader($header) {
-	    if ($header != NULL) {
-	        $headerData = array('packageVersions' => array());
-	        
-	        foreach ($header->packageVersions as $key => $hdrElem) {
-	            $headerData['packageVersions'][] = array(
-	                'majorNumber' => $hdrElem->majorNumber,
-	                'minorNumber' => $hdrElem->minorNumber,
-                    'namespace' => $hdrElem->namespace,
-                );
-	        }
-	        
+		if ($header != NULL) {
+			$headerData = array('packageVersions' => array());
+			
+			foreach ($header->packageVersions as $key => $hdrElem) {
+				$headerData['packageVersions'][] = array(
+					'majorNumber' => $hdrElem->majorNumber,
+					'minorNumber' => $hdrElem->minorNumber,
+					'namespace' => $hdrElem->namespace,
+				);
+			}
+			
 			$this->packageVersionHeader = new SoapHeader($this->namespace,
 				'PackageVersionHeader',
-			    $headerData
+				$headerData
 			);
 		} else {
 			$this->packageVersionHeader = NULL;
@@ -514,34 +509,34 @@ class SforceBaseClient {
 	}
 
   public function sendSingleEmail($request) {
-    if (is_array($request)) {
-      $messages = array();
-      foreach ($request as $r) {
-        $email = new SoapVar($r, SOAP_ENC_OBJECT, 'SingleEmailMessage', $this->namespace);
-        array_push($messages, $email);
-      }
-      $arg->messages = $messages;
-      return $this->_sendEmail($arg);
-    } else {
-      $backtrace = debug_backtrace();
-      die('Please pass in array to this function:  '.$backtrace[0]['function']);
-    }
+	if (is_array($request)) {
+	  $messages = array();
+	  foreach ($request as $r) {
+		$email = new SoapVar($r, SOAP_ENC_OBJECT, 'SingleEmailMessage', $this->namespace);
+		array_push($messages, $email);
+	  }
+	  $arg->messages = $messages;
+	  return $this->_sendEmail($arg);
+	} else {
+	  $backtrace = debug_backtrace();
+	  die('Please pass in array to this function:  '.$backtrace[0]['function']);
+	}
   }
 
   public function sendMassEmail($request) {
-    if (is_array($request)) {
-      $messages = array();
-      foreach ($request as $r) {
-        $email = new SoapVar($r, SOAP_ENC_OBJECT, 'MassEmailMessage', $this->namespace);
-        array_push($messages, $email);
-      }
-      $arg->messages = $messages;
-      return $this->_sendEmail($arg);
-    } else {
-      $backtrace = debug_backtrace();
-      die('Please pass in array to this function:  '.$backtrace[0]['function']);
-    }
-  }	
+	if (is_array($request)) {
+	  $messages = array();
+	  foreach ($request as $r) {
+		$email = new SoapVar($r, SOAP_ENC_OBJECT, 'MassEmailMessage', $this->namespace);
+		array_push($messages, $email);
+	  }
+	  $arg->messages = $messages;
+	  return $this->_sendEmail($arg);
+	} else {
+	  $backtrace = debug_backtrace();
+	  die('Please pass in array to this function:  '.$backtrace[0]['function']);
+	}
+  } 
 	
 	protected function _sendEmail($arg) {
 		$this->setHeaders();
@@ -781,9 +776,8 @@ class SforceBaseClient {
 	public function query($query) {
 		$this->setHeaders("query");
 		$QueryResult = $this->sforce->query(array (
-                      'queryString' => $query
+					  'queryString' => $query
 		))->result;
-		$this->_handleRecords($QueryResult);
 		return $QueryResult;
 	}
 
@@ -799,7 +793,6 @@ class SforceBaseClient {
 		$arg = new stdClass;
 		$arg->queryLocator = $queryLocator;
 		$QueryResult = $this->sforce->queryMore($arg)->result;
-		$this->_handleRecords($QueryResult);
 		return $QueryResult;
 	}
 
@@ -813,25 +806,11 @@ class SforceBaseClient {
 	public function queryAll($query, $queryOptions = NULL) {
 		$this->setHeaders("queryAll");
 		$QueryResult = $this->sforce->queryAll(array (
-                        'queryString' => $query
+						'queryString' => $query
 		))->result;
-		$this->_handleRecords($QueryResult);
 		return $QueryResult;
 	}
 
-
-	private function _handleRecords(& $QueryResult) {
-		if ($QueryResult->size > 0) {
-			if ($QueryResult->size == 1) {
-				$recs = array (
-				$QueryResult->records
-				);
-			} else {
-				$recs = $QueryResult->records;
-			}
-			$QueryResult->records = $recs;
-		}
-	}
 
 	/**
 	 * Retrieves one or more objects based on the specified object IDs.
