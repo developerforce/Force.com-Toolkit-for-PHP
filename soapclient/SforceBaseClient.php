@@ -103,12 +103,14 @@ class SforceBaseClient {
 			'user_agent' => 'salesforce-toolkit-php/'.$this->version,
 			'encoding' => 'utf-8',
 			'trace' => 1,
-			'features' => SOAP_SINGLE_ELEMENT_ARRAYS
+			'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
+			'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP
 		);
-			
-		$phpversion = substr(phpversion(), 0, strpos(phpversion(), '-'));
-		if ($phpversion > '5.1.2') {
-			$soapClientArray['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP;
+
+		// We don't need to parse out any subversion suffix - e.g. "-01" since
+		// PHP type conversion will ignore it
+		if (phpversion() < 5.2) {
+			die("PHP versions older than 5.2 are no longer supported. Please upgrade!");
 		}
 
 		if ($proxy != null) {
