@@ -42,6 +42,7 @@ echo 'Your current PHP version is: ' . phpversion();
 	<div><a href="runTest.php?type=1&target=QueryMore">QueryMore</a></div>
 	<div><a href="runTest.php?type=1&target=QueryOptions">QueryOptions</a></div>
 	<div><a href="runTest.php?type=1&target=Query">Query</a></div>
+	<div>&nbsp;</div>
 	<div><a href="runTest.php?type=1&target=ResetPassword">ResetPassword</a></div>
 	<div><a href="runTest.php?type=1&target=Retrieve">Retrieve</a></div>
 	<div><a href="runTest.php?type=1&target=Search">Search</a></div>
@@ -86,6 +87,7 @@ echo 'Your current PHP version is: ' . phpversion();
 	<div><a href="runTest.php?type=2&target=QueryMore">QueryMore</a></div>
 	<div><a href="runTest.php?type=2&target=QueryOptions">QueryOptions</a></div>
 	<div><a href="runTest.php?type=2&target=Query">Query</a></div>
+	<div><a href="runTest.php?type=2&target=AggregateResult">AggregateResult</a> <sup>new!</sup></div>
 	<div><a href="runTest.php?type=2&target=ResetPassword">ResetPassword</a></div>
 	<div><a href="runTest.php?type=2&target=Retrieve">Retrieve</a></div>
 	<div><a href="runTest.php?type=2&target=Search">Search</a></div>

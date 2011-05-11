@@ -33,6 +33,7 @@ abstract class Lib_Test_TestAbstract
 							'w');
 		
 		$this->_phpVersion = phpversion();
+		header('Content-Type: text/plain');
 	}
 	
 	/**
@@ -72,7 +73,7 @@ abstract class Lib_Test_TestAbstract
 			$end_time = microtime(TRUE);
 			$resultStr = ob_get_clean();
 			$this->_logger->write($resultStr);
-			print '<pre>' . $resultStr . '</pre>';
+			print $resultStr;
 			
 			try {
 				$this->_validate($resultStr);
@@ -90,8 +91,9 @@ abstract class Lib_Test_TestAbstract
 			$eStr = ob_get_clean();
 			$this->_logger->write($eStr);
 			
-			print '<pre>' . $this->_mySforceConnection->getLastRequest() . '</pre>';
-			print '<pre>' . $eStr . '</pre>';
+			print $this->_mySforceConnection->getLastRequest();
+			echo "\n\n\n";
+			print $eStr;
 			
 			$metaInfoLogger->write('Test failed!');
 		}
