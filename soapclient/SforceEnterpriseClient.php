@@ -122,6 +122,7 @@ class SforceEnterpriseClient extends SforceBaseClient {
 	  }
 	  // ------
     }
+    $arg = new stdClass;
     $arg->sObjects = $sObjects;
     return parent::_upsert($arg);
   }
