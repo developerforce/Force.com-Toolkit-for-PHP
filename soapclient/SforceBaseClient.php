@@ -841,7 +841,7 @@ class SforceBaseClient {
 		$this->setHeaders("search");
 		$arg = new stdClass;
 		$arg->searchString = new SoapVar($searchString, XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
-		return $this->sforce->search($arg)->result;
+		return new SforceSearchResult($this->sforce->search($arg)->result);
 	}
 
 	/**
@@ -884,6 +884,33 @@ class SforceBaseClient {
 		$arg = new stdClass;
 		$arg->userId = new SoapVar($userId, XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
 		return $this->sforce->resetPassword($arg)->result;
+	}
+}
+
+class SforceSearchResult {
+	public $queryLocator;
+	public $done;
+	public $searchRecords;
+	public $size;
+
+	public function __construct($response) {
+
+		if($response instanceof SforceSearchResult) {
+			$this->searchRecords = $response->searchRecords;
+		} else {
+			$this->searchRecords = array();
+			if (isset($response->searchRecords)) {
+				if (is_array($response->searchRecords)) {
+					foreach ($response->searchRecords as $record) {
+						$sobject = new SObject($record->record);
+						array_push($this->searchRecords, $sobject);
+					};
+				} else {
+					$sobject = new SObject($response->searchRecords->record);
+					array_push($this->records, $sobject);
+				}
+			}
+		}
 	}
 }
 
