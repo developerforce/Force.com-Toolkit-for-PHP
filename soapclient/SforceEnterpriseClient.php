@@ -86,6 +86,7 @@ class SforceEnterpriseClient extends SforceBaseClient {
     	}
     	// ------
     }
+    $arg = new stdClass;
     $arg->sObjects = $sObjects;
     return parent::_update($arg);
   }
@@ -135,6 +136,7 @@ class SforceEnterpriseClient extends SforceBaseClient {
    */
   public function merge($mergeRequest, $type) {
     $mergeRequest->masterRecord = new SoapVar($mergeRequest->masterRecord, SOAP_ENC_OBJECT, $type, $this->namespace);
+    $arg = new stdClass;
     $arg->request = new SoapVar($mergeRequest, SOAP_ENC_OBJECT, 'MergeRequest', $this->namespace);
     return parent::_merge($arg);
   }
