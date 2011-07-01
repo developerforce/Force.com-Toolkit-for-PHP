@@ -888,10 +888,7 @@ class SforceBaseClient {
 }
 
 class SforceSearchResult {
-	public $queryLocator;
-	public $done;
 	public $searchRecords;
-	public $size;
 
 	public function __construct($response) {
 
