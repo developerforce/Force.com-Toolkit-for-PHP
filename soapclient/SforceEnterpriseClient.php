@@ -50,8 +50,23 @@ class SforceEnterpriseClient extends SforceBaseClient {
    * @return SaveResult
    */
   public function create($sObjects, $type) {
-    foreach ($sObjects as &$sobject) {
-      $sobject = new SoapVar($sobject, SOAP_ENC_OBJECT, $type, $this->namespace);
+    foreach ($sObjects as &$sObject) {
+    	// FIX for fieldsToNull issue - allow array in fieldsToNull (STEP #1)
+   		$xmlStr = '';
+    	if(isset($sObject->fieldsToNull) && is_array($sObject->fieldsToNull)) {
+    		foreach($sObject->fieldsToNull as $fieldToNull) {
+    			$xmlStr .= '<fieldsToNull>' . $fieldToNull . '</fieldsToNull>';
+    		}
+    	}
+    	// ------
+    	
+      $sObject = new SoapVar($sObject, SOAP_ENC_OBJECT, $type, $this->namespace);
+
+    	// FIX for fieldsToNull issue - allow array in fieldsToNull (STEP #2)
+    	if($xmlStr != '') {
+    		$sObject->enc_value->fieldsToNull = new SoapVar(new SoapVar($xmlStr, XSD_ANYXML), SOAP_ENC_ARRAY);
+    	}
+    	// ------
     }
     $arg = $sObjects;
 
