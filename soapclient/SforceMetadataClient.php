@@ -117,14 +117,14 @@ class SforceMetadataClient {
     $this->sforce->__setSoapHeaders($header_array);
   }
 
-  public function create($obj) {
-    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, 'CustomObject', $this->namespace);
+  public function create($obj, $objtype = 'CustomObject') {
+    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, $objtype, $this->namespace);
      
     return $this->sforce->create($encodedObj);
   }
   
-  public function delete($obj) {
-    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, 'CustomObject', $this->namespace);
+  public function delete($obj, $objtype = 'CustomObject') {
+    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, $objtype, $this->namespace);
      
     return $this->sforce->delete($encodedObj);
   }  
