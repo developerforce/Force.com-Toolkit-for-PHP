@@ -79,6 +79,10 @@ class SforceCustomObject {
     $this->pluralLabel = $pluralLabel;
   }
 
+  public function setSharingModel($sharingModel) {
+    $this->sharingModel = $sharingModel;
+  }
+
   public function setStartsWith($startsWith) {
     $this->startsWith = $startsWith;
   }
