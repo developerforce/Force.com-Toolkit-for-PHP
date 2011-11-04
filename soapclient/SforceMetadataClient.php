@@ -116,17 +116,26 @@ class SforceMetadataClient {
     $this->_setClientId($header_array);
     $this->sforce->__setSoapHeaders($header_array);
   }
+  
+  private function getObjtype($obj) {
+    $classArray = explode('\\', get_class($obj));
+    $objtype = array_pop($classArray);
+    if (strpos($objtype, 'Sforce', 0) === 0) {
+      $objtype = substr($objtype, 6);
+    }
+    return $objtype;
+  }
 
-  public function create($obj, $objtype = 'CustomObject') {
+  public function create($obj) {
     $encodedObj = new stdClass();
-    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, $objtype, $this->namespace);
+    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, $this->getObjtype($obj), $this->namespace);
      
     return $this->sforce->create($encodedObj);
   }
   
-  public function delete($obj, $objtype = 'CustomObject') {
+  public function delete($obj) {
     $encodedObj = new stdClass();
-    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, $objtype, $this->namespace);
+    $encodedObj->metadata = new SoapVar($obj, SOAP_ENC_OBJECT, $this->getObjtype($obj), $this->namespace);
      
     return $this->sforce->delete($encodedObj);
   }  
