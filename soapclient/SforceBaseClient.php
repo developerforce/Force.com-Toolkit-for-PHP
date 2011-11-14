@@ -1156,9 +1156,9 @@ class SObject {
 							$result = $value;
 						}
 
-						//Set the attributes too.
-						if(isset($attributes) && isset($attributes['xsi:nil'])) {
-								$result = $attributes['xsi:nil'];
+						//Check for nil and ignore other attributes.
+						if (isset($attributes) && isset($attributes['xsi:nil']) && !strcasecmp($attributes['xsi:nil'], 'true')) {
+							$result = null;
 						}
 						break;
 				}
