@@ -33,6 +33,40 @@ require_once ('SforceBaseClient.php');
  * @package SalesforceSoapClient
  */
 /**
+ * SforceSoapClient class.
+ *
+ * @package SalesforceSoapClient
+ */
+ // When parsing partner WSDL, when PHP SOAP sees NewValue and OldValue, since
+ // the element has a xsi:type attribute with value 'string', it drops the
+ // string content into the parsed output and loses the tag name. Removing the
+ // xsi:type forces PHP SOAP to just leave the tags intact
+ class SforceSoapClient extends SoapClient {
+   function __doRequest($request, $location, $action, $version) {
+     $response = parent::__doRequest($request, $location, $action, $version);
+
+     // Quick check to only parse the XML here if we think we need to
+     if (strpos($response, '<sf:OldValue') === false && strpos($response, '<sf:NewValue') === false) {
+       return $response;
+     }
+
+     $dom = new DOMDocument();
+     $dom->loadXML($response);
+
+     $nodeList = $dom->getElementsByTagName('NewValue');
+     foreach ($nodeList as $node) {
+       $node->removeAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'type');
+     }
+     $nodeList = $dom->getElementsByTagName('OldValue');
+     foreach ($nodeList as $node) {
+       $node->removeAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'type');
+     }
+
+     return $dom->saveXML();      
+   }
+ }
+
+/**
  * SforcePartnerClient class.
  *
  * @package SalesforceSoapClient
@@ -42,6 +76,11 @@ class SforcePartnerClient extends SforceBaseClient {
 	
   function SforcePartnerClient() {
     $this->namespace = self::PARTNER_NAMESPACE;
+  }
+  
+  protected function getSoapClient($wsdl, $options) {
+    // Workaround an issue in parsing OldValue and NewValue in histories
+		return new SforceSoapClient($wsdl, $options);      
   }
 
   /**

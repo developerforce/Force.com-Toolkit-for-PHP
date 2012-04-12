@@ -29,7 +29,6 @@ require_once ('SforceProcessRequest.php');
 require_once ('ProxySettings.php');
 require_once ('SforceHeaderOptions.php');
 
-
 /**
  * This file contains one class.
  * @package SalesforceSoapClient
@@ -61,6 +60,10 @@ class SforceBaseClient {
 	protected $localeOptions;
 	protected $packageVersionHeader;
 	
+  protected function getSoapClient($wsdl, $options) {
+		return new SoapClient($wsdl, $options);      
+  }
+	
 	public function getNamespace() {
 		return $this->namespace;
 	}
@@ -90,7 +93,7 @@ class SforceBaseClient {
 			echo 'False';
 		}
 	}
-
+	
 	/**
 	 * Connect method to www.salesforce.com
 	 *
@@ -122,7 +125,8 @@ class SforceBaseClient {
             $soapClientArray = array_merge($soapClientArray, $proxySettings);
 		}
 
-		$this->sforce = new SoapClient($wsdl, $soapClientArray);
+  	$this->sforce = $this->getSoapClient($wsdl, $soapClientArray);
+
 		return $this->sforce;
 	}
 
