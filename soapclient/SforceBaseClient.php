@@ -1114,6 +1114,9 @@ class SObject {
 			}
 		}
 	}
+	
+	function __get($name) {	return (isset($this->fields->$name))? $this->fields->$name : false; }
+	function __isset($name) { return isset($this->fields->$name); }
 
 	/**
 	 * Parse the "any" string from an sObject.  First strip out the sf: and then
