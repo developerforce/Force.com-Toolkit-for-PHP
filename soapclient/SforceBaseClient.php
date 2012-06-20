@@ -949,12 +949,10 @@ class QueryResult implements Iterator{
 			if (isset($response->records)) {
 				if (is_array($response->records)) {
 					foreach ($response->records as $record) {
-						$sobject = new SObject($record);
-						array_push($this->records, $sobject);
+						array_push($this->records, $record);
 					};
 				} else {
-					$sobject = new SObject($response->records);
-					array_push($this->records, $sobject);
+					array_push($this->records, $record);
 				}
 			}
 		}
@@ -966,7 +964,7 @@ class QueryResult implements Iterator{
 	public function rewind() { $this->pointer = 0; }
 	public function next() { ++$this->pointer; }
 	public function key() { return $this->pointer; }
-	public function current() { return $this->records[$this->pointer]; }
+	public function current() { return new SObject($this->records[$this->pointer]); }
 	
 	public function valid() {
 		while ($this->pointer >= count($this->records)) {
