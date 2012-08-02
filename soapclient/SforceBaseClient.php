@@ -785,10 +785,12 @@ class SforceBaseClient {
 	 */
 	public function query($query) {
 		$this->setHeaders("query");
-		$QueryResult = $this->sforce->query(array (
+		$raw = $this->sforce->query(array (
 					  'queryString' => $query
 		))->result;
-		return new QueryResult($QueryResult);
+		$QueryResult = new QueryResult($raw);
+		$QueryResult->setSf($this); // Dependency Injection
+		return $QueryResult;
 	}
 
 	/**
@@ -802,8 +804,10 @@ class SforceBaseClient {
 		$this->setHeaders("queryMore");
 		$arg = new stdClass();
 		$arg->queryLocator = $queryLocator;
-		$QueryResult = $this->sforce->queryMore($arg)->result;
-		return new QueryResult($QueryResult);
+		$raw = $this->sforce->queryMore($arg)->result;
+		$QueryResult = new QueryResult($raw);
+		$QueryResult->setSf($this); // Dependency Injection
+		return $QueryResult;
 	}
 
 	/**
@@ -815,10 +819,12 @@ class SforceBaseClient {
 	 */
 	public function queryAll($query, $queryOptions = NULL) {
 		$this->setHeaders("queryAll");
-		$QueryResult = $this->sforce->queryAll(array (
+		$raw = $this->sforce->queryAll(array (
 						'queryString' => $query
 		))->result;
-		return new QueryResult($QueryResult);
+		$QueryResult = new QueryResult($raw);
+		$QueryResult->setSf($this); // Dependency Injection
+		return $QueryResult;
 	}
 
 
@@ -919,16 +925,22 @@ class SforceSearchResult {
 	}
 }
 
-class QueryResult {
+class QueryResult implements Iterator{
 	public $queryLocator;
 	public $done;
 	public $records;
 	public $size;
 
+	public $pointer; // Current iterator location
+	private $sf; // SOAP Client
+	
 	public function __construct($response) {
 		$this->queryLocator = $response->queryLocator;
 		$this->done = $response->done;
 		$this->size = $response->size;
+		
+		$this->pointer = 0;
+		$this->sf = false;
 
 		if($response instanceof QueryResult) {
 			$this->records = $response->records;
@@ -937,15 +949,39 @@ class QueryResult {
 			if (isset($response->records)) {
 				if (is_array($response->records)) {
 					foreach ($response->records as $record) {
-						$sobject = new SObject($record);
-						array_push($this->records, $sobject);
+						array_push($this->records, $record);
 					};
 				} else {
-					$sobject = new SObject($response->records);
-					array_push($this->records, $sobject);
+					array_push($this->records, $record);
 				}
 			}
 		}
+	}
+	
+	public function setSf(SforceBaseClient $sf) { $this->sf = $sf; } // Dependency Injection
+	
+	// Basic Iterator implementation functions
+	public function rewind() { $this->pointer = 0; }
+	public function next() { ++$this->pointer; }
+	public function key() { return $this->pointer; }
+	public function current() { return new SObject($this->records[$this->pointer]); }
+	
+	public function valid() {
+		while ($this->pointer >= count($this->records)) {
+			// Pointer is larger than (current) result set; see if we can fetch more
+			if ($this->done === false) {
+				if ($this->sf === false) throw new Exception("Dependency not met!");
+				$response = $this->sf->queryMore($this->queryLocator);
+				$this->records = array_merge($this->records, $response->records); // Append more results
+				$this->done = $response->done;
+				$this->queryLocator = $response->queryLocator;
+			} else {
+				return false; // No more records to fetch
+			}
+		}
+		if (isset($this->records[$this->pointer])) return true;
+		
+		throw new Exception("QueryResult has gaps in the record data?");
 	}
 }
 
@@ -1076,6 +1112,9 @@ class SObject {
 			}
 		}
 	}
+	
+	function __get($name) {	return (isset($this->fields->$name))? $this->fields->$name : false; }
+	function __isset($name) { return isset($this->fields->$name); }
 
 	/**
 	 * Parse the "any" string from an sObject.  First strip out the sf: and then
