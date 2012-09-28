@@ -98,17 +98,22 @@ class SforceBaseClient {
 	 * Connect method to www.salesforce.com
 	 *
 	 * @param string $wsdl   Salesforce.com Partner WSDL
+   * @param object $proxy  (optional) proxy settings with properties host, port,
+   *                       login and password
+   * @param array $soap_options (optional) Additional options to send to the
+   *                       SoapClient constructor. @see
+   *                       http://php.net/manual/en/soapclient.soapclient.php
 	 */
-	public function createConnection($wsdl, $proxy=null) {
+	public function createConnection($wsdl, $proxy=null, $soap_options=array()) {
 		$phpversion = substr(phpversion(), 0, strpos(phpversion(), '-'));
 		
-		$soapClientArray = array (
+		$soapClientArray = array_merge(array (
 			'user_agent' => 'salesforce-toolkit-php/'.$this->version,
 			'encoding' => 'utf-8',
 			'trace' => 1,
 			'features' => SOAP_SINGLE_ELEMENT_ARRAYS,
 			'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP
-		);
+		), $soap_options);
 
 		// We don't need to parse out any subversion suffix - e.g. "-01" since
 		// PHP type conversion will ignore it
