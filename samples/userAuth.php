@@ -1,7 +1,7 @@
 <?php
 /*--------------------------------------------------------\
-|  Assigned your USER ID & PASSWORD with TOKEN 
-|  This file is included in each of the SAMPLE Example
+|  Assign your USER ID & PASSWORD with TOKEN 
+|  This file is included in each of the SAMPLES
 \--------------------------------------------------------*/
 
 $USERNAME = "PUT YOUR salseforce USER NAME";
