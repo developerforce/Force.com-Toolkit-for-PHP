@@ -8,7 +8,7 @@ $USERNAME = "PUT YOUR salseforce USER NAME";
 $PASSWORD = "PUT YOUR PASSWORD along with TOKEN";
 
 /*--------------------------------------------------------\
-|  Create a Lead using the salseforce account 
+|  Create a Lead using the salesforce account 
 |  Get the LEADID and modify it in following file
 |  userAuth.php in samples directory
 \--------------------------------------------------------*/
