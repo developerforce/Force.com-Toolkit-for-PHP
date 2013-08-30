@@ -669,10 +669,12 @@ class SforceBaseClient {
 	 * @param string Type   Object Type
 	 * @return DescribeLayoutResult
 	 */
-	public function describeLayout($type) {
+	public function describeLayout($type, array $recordTypeIds=null) {
 		$this->setHeaders("describeLayout");
 		$arg = new stdClass();
 		$arg->sObjectType = new SoapVar($type, XSD_STRING, 'string', 'http://www.w3.org/2001/XMLSchema');
+		if (isset($recordTypeIds) && count($recordTypeIds)) 
+			$arg->recordTypeIds = $recordTypeIds;
 		return $this->sforce->describeLayout($arg)->result;
 	}
 
