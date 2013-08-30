@@ -81,6 +81,10 @@ class SingleEmailMessage extends Email {
     $this->htmlBody = $htmlBody;
   }
 
+  public function setOrgWideEmailAddressId($orgWideEmailAddressId) {
+    $this->orgWideEmailAddressId = $orgWideEmailAddressId;
+  }
+
   public function setPlainTextBody($plainTextBody) {
     $this->plainTextBody = $plainTextBody;
   }
