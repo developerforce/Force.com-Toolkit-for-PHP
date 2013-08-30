@@ -1,14 +1,14 @@
 <?php
 /*--------------------------------------------------------\
-|  Assigned your USER ID & PASSWORD with TOKEN 
-|  This file is included in each of the SAMPLE Example
+|  Assign your USER ID & PASSWORD with TOKEN 
+|  This file is included in each of the SAMPLES
 \--------------------------------------------------------*/
 
 $USERNAME = "PUT YOUR salseforce USER NAME";
 $PASSWORD = "PUT YOUR PASSWORD along with TOKEN";
 
 /*--------------------------------------------------------\
-|  Create a Lead using the salseforce account 
+|  Create a Lead using the salesforce account 
 |  Get the LEADID and modify it in following file
 |  userAuth.php in samples directory
 \--------------------------------------------------------*/
