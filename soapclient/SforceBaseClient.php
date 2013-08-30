@@ -41,7 +41,7 @@ class SforceBaseClient {
 	protected $sforce;
 	protected $sessionId;
 	protected $location;
-	protected $version = '20.0';
+	protected $version = '27.0';
 
 	protected $namespace;
 
