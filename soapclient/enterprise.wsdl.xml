@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Salesforce.com Enterprise Web Services API Version 20.0
+Salesforce.com Enterprise Web Services API Version 27.0
 Generated on 2010-11-04 10:49:00 +0000.
 
 Copyright 1999-2010 salesforce.com, inc.
@@ -6296,7 +6296,7 @@ All Rights Reserved
     <service name="SforceService">
         <documentation>Sforce SOAP API</documentation>
         <port binding="tns:SoapBinding" name="Soap">
-            <soap:address location="https://login.salesforce.com/services/Soap/c/20.0"/>
+            <soap:address location="https://login.salesforce.com/services/Soap/c/27.0"/>
         </port>
     </service>
 </definitions>
