@@ -1,0 +1,8 @@
+{
+    "name": "developerforce/force.com-toolkit-for-php",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
