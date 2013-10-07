@@ -1,5 +1,11 @@
 {
     "name": "developerforce/force.com-toolkit-for-php",
+    "autoload": {
+        "psr-0": { "DeveloperForce\\ForceDotComToolkit": "" },
+        "classmap": [
+           "soapclient"
+        ]
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
