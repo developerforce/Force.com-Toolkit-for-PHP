@@ -1,0 +1,15 @@
+{
+    "name": "developerforce/force.com-toolkit-for-php",
+    "description": "A wrapper for the Force.com Web Services SOAP API",
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "classmap": [
+           "soapclient"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
