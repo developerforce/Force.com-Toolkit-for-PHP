@@ -1003,7 +1003,7 @@ class SObject {
 		}
 
 		foreach ($response as $responseKey => $responseValue) {
-			if (in_array($responseKey, array('Id', 'type', 'any'))) {
+			if (in_array(strval($responseKey), array('Id', 'type', 'any'))) {
 				continue;
 			}
 			$this->$responseKey = $responseValue;
