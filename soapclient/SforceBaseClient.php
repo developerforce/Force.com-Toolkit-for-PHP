@@ -173,7 +173,6 @@ class SforceBaseClient {
 	}
 	
 	/**
-	 * // SCAVIX
 	 * Use existing session id for this API connection
 	 *
 	 * @param string $sessionid   Session ID
