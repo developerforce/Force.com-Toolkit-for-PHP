@@ -171,6 +171,75 @@ class SforceBaseClient {
 		
 		return $result;
 	}
+	
+	/**
+	 * // SCAVIX
+	 * Use existing session id for this API connection
+	 *
+	 * @param string $sessionid   Session ID
+	 * @param string $serverurl   SFDC Server Url
+	 *
+	 * @return LoginResult
+	 */
+	public function ContinueSession($sessionid, $serverurl) 
+	{
+		$this->sforce->__setSoapHeaders(NULL);
+		if ($this->callOptions != NULL) {
+			$this->sforce->__setSoapHeaders(array($this->callOptions));
+		}
+		if ($this->loginScopeHeader != NULL) {
+			$this->sforce->__setSoapHeaders(array($this->loginScopeHeader));
+		}
+		/*
+		$result = (object) array(
+			'sessionId' => '00D24000000J9Sn!ARYAQB3P0gUnmUymxhM.am70IjhG816sdg5zHkJEb.szVbVq6SLkwdPk_M4F_Jj.BcWXOqJYE8Qkn4MLsM8Mf7YJrc1AbjZs',
+			'serverUrl' => 'https://eu5.salesforce.com/services/Soap/u/32.0'
+		);
+		*/
+		$result = (object) array(
+			'sessionId' => $sessionid,
+			'serverUrl' => $serverurl
+		);		
+		$this->_setLoginHeader($result);
+		
+		return $result;
+	}
+	
+	public function RefreshToken($client_id, $secret, $refresh_token)
+	{
+		try{
+			$url = 'https://login.salesforce.com/services/oauth2/token';
+			$fields = array(
+				'grant_type'	=> "refresh_token",
+				'client_id'		=> $client_id,
+				'client_secret' => $secret,
+				'refresh_token' => $refresh_token
+			);
+
+//			$fields_string = '';
+//			foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
+
+			$ch = curl_init($url);
+
+			//set the url, number of POST vars, POST data
+			curl_setopt($ch,CURLOPT_POST, true);
+			curl_setopt($ch,CURLOPT_POSTFIELDS, http_build_query($fields));
+			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+			//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+			//execute post
+			$result = curl_exec($ch);
+
+			//close connection
+			curl_close($ch);
+
+			$json_a = json_decode($result,true);
+			return $json_a;
+			
+		}catch(Exception $e){
+			return false;
+		}
+	}	
 
 	/**
 	 * log outs from the salseforce system`
@@ -219,9 +288,9 @@ class SforceBaseClient {
 	private function setHeaders($call=NULL) {
 		$this->sforce->__setSoapHeaders(NULL);
 		
-		$header_array = array (
-			$this->sessionHeader
-		);
+		$header_array = array ();
+		if( $this->sessionHeader )
+			array_push($header_array, $this->sessionHeader);
 
 		$header = $this->callOptions;
 		if ($header != NULL) {
@@ -321,7 +390,6 @@ class SforceBaseClient {
 				array_push($header_array, $header);
 			}
 		}
-		
 		
 		$this->sforce->__setSoapHeaders($header_array);
 	}
