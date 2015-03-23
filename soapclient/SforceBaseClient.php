@@ -579,11 +579,12 @@ class SforceBaseClient {
 	public function delete($ids) {
 		$this->setHeaders("delete");
 		if(count($ids) > 200) {
+			$result = array();
 			$chunked_ids = array_chunk($ids, 200);
 			foreach($chunked_ids as $cids) {
 				$arg = new stdClass;
 				$arg->ids = $cids;
-				$result = $this->sforce->delete($arg)->result;
+				$result = array_merge($result, $this->sforce->delete($arg)->result);
 			}
 		} else {
 			$arg = new stdClass;
