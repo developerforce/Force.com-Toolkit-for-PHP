@@ -556,9 +556,18 @@ class SforceBaseClient {
 	protected function _convertToAny($fields) {
 		$anyString = '';
 		foreach ($fields as $key => $value) {
-			$anyString = $anyString . '<' . $key . '>' . $value . '</' . $key . '>';
+			$anyString = $anyString . '<' . $key . '>' . $this->_sanitizeValue($value) . '</' . $key . '>';		// scavix
 		}
 		return $anyString;
+	}
+	
+	/**
+	 * Added by Scavix Software 4/2015
+	 */
+	protected function _sanitizeValue($value) {
+		if((strpos($value, '&') !== false) || (strpos($value, '<') !== false) || (strpos($value, '>') !== false))
+			return '<![CDATA['.$value.']]>';
+		return $value;
 	}
 
 	protected function _create($arg) {
