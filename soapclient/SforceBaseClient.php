@@ -105,7 +105,6 @@ class SforceBaseClient {
    *                       http://php.net/manual/en/soapclient.soapclient.php
 	 */
 	public function createConnection($wsdl, $proxy=null, $soap_options=array()) {
-		$phpversion = substr(phpversion(), 0, strpos(phpversion(), '-'));
 		
 		$soapClientArray = array_merge(array (
 			'user_agent' => 'salesforce-toolkit-php/'.$this->version,
@@ -117,7 +116,7 @@ class SforceBaseClient {
 
 		// We don't need to parse out any subversion suffix - e.g. "-01" since
 		// PHP type conversion will ignore it
-		if (phpversion() < 5.2) {
+		if (version_compare(PHP_VERSION, '5.2') < 0 ) {
 			die("PHP versions older than 5.2 are no longer supported. Please upgrade!");
 		}
 
