@@ -74,7 +74,7 @@ require_once ('SforceBaseClient.php');
 class SforcePartnerClient extends SforceBaseClient {
   const PARTNER_NAMESPACE = 'urn:partner.soap.sforce.com';
 	
-  function SforcePartnerClient() {
+  public function __construct() {
     $this->namespace = self::PARTNER_NAMESPACE;
   }
   
