@@ -107,16 +107,30 @@ class LoginScopeHeader {
  * @package SalesforceSoapClient
  */
 class QueryOptions {
-	// int - Batch size for the number of records returned in a query or queryMore call. The default is 500; the minimum is 200, and the maximum is 2,000.
+	/** @var int */
 	public $batchSize;
 
 	/**
-	 * Constructor
-	 *
 	 * @param int $limit  Batch size
 	 */
-	public function __construct($limit) {
+	public function __construct($limit = 500) {
+		$this->validateLimit($limit);
 		$this->batchSize = $limit;
+	}
+	
+	/**
+	 * @param int $limit
+	 * 
+	 * @throws Exception
+	 */
+	private function validateLimit($limit)
+	{
+		if ($limit < 200) {
+			throw new \Exception('The batch size limit can\'t be lower than 200');
+		}
+		if ($limit > 2000) {
+			throw new \Exception('The batch size limit can\'t be higher than 2000');
+		}
 	}
 }
 
