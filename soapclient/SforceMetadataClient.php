@@ -168,7 +168,17 @@ class SforceMetadataClient {
     return $this->sforce->__getLastResponseHeaders();
   }
 
-
+  public function deploy($zipFile, $deployOptions) {
+    $request = new stdClass();
+    $request->ZipFile = $zipFile;
+    $request->DeployOptions = $deployOptions;
+    $response = $this->sforce->__soapCall("deploy", array($request));
+    if (isset($response->result)) {
+      return $response->result;
+    } else {
+      return null;
+    }
+  }
 }
 
 
