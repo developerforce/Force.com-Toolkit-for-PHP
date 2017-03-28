@@ -36,6 +36,7 @@ require_once ('SforceBaseClient.php');
  */
 class SforceEnterpriseClient extends SforceBaseClient {
   const ENTERPRISE_NAMESPACE = 'urn:enterprise.soap.sforce.com';
+
   public function __construct() {
     $this->namespace = self::ENTERPRISE_NAMESPACE;
   }
