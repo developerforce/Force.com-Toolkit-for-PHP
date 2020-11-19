@@ -1,6 +1,6 @@
 /* Default style for links */
 a:active  { color: #666666; text-decoration: underline; font-weight:normal; }
-a:visited.{ color: #666666; text-decoration: underline; font-weight:normal; }
+a:visited { color: #666666; text-decoration: underline; font-weight:normal; }
 a:link { color: #666666; text-decoration: underline; font-weight:normal; }
 a:hover { color: #CC0000; text-decoration: underline; font-weight:normal; }
 
