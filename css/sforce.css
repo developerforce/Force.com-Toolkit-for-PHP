@@ -9,12 +9,12 @@ code.cCode
 
 .codebox 
 {
-	background: #f1f5f9;
-	border: 1px solid #c7cfd5;
-  font-family: Courier New, Courier, mono
-	margin: 20px 0;
-	padding: 8px;
-	text-align: left;
+  background: #f1f5f9;
+  border: 1px solid #c7cfd5;
+  font-family: Courier New, Courier, mono;
+  margin: 20px 0;
+  padding: 8px;
+  text-align: left;
 }
 	
 em.cEmphasis
